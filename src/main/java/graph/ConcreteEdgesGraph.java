@@ -1,88 +1,75 @@
-/* Copyright (c) 2015-2016 MIT 6.005 course staff, all rights reserved.
- * Redistribution of original or derived work requires permission of course staff.
- */
 package graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * An implementation of Graph.
- * 
- * <p>PS2 instructions: you MUST use the provided rep.
+ * Graph implementation using a set of Edge objects.
  */
 public class ConcreteEdgesGraph implements Graph<String> {
-    
+
     private final Set<String> vertices = new HashSet<>();
     private final List<Edge> edges = new ArrayList<>();
-    
-    // Abstraction function:
-    //   TODO
-    // Representation invariant:
-    //   TODO
-    // Safety from rep exposure:
-    //   TODO
-    
-    // TODO constructor
-    
-    // TODO checkRep
-    
-    @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    // TODO toString()
-    
-}
 
-/**
- * TODO specification
- * Immutable.
- * This class is internal to the rep of ConcreteEdgesGraph.
- * 
- * <p>PS2 instructions: the specification and implementation of this class is
- * up to you.
- */
-class Edge {
-    
-    // TODO fields
-    
-    // Abstraction function:
-    //   TODO
-    // Representation invariant:
-    //   TODO
-    // Safety from rep exposure:
-    //   TODO
-    
-    // TODO constructor
-    
-    // TODO checkRep
-    
-    // TODO methods
-    
-    // TODO toString()
-    
+    @Override
+    public boolean add(String vertex) {
+        return vertices.add(vertex);
+    }
+
+    @Override
+    public boolean remove(String vertex) {
+        if (!vertices.contains(vertex)) return false;
+        vertices.remove(vertex);
+        edges.removeIf(e -> e.getSource().equals(vertex) || e.getTarget().equals(vertex));
+        return true;
+    }
+
+    @Override
+    public int set(String source, String target, int weight) {
+        vertices.add(source);
+        vertices.add(target);
+
+        for (Edge e : edges) {
+            if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+                int old = e.getWeight();
+                edges.remove(e);
+                if (weight > 0) edges.add(new Edge(source, target, weight));
+                return old;
+            }
+        }
+
+        if (weight > 0)
+            edges.add(new Edge(source, target, weight));
+
+        return 0;
+    }
+
+    @Override
+    public Set<String> vertices() {
+        return new HashSet<>(vertices);
+    }
+
+    @Override
+    public Map<String, Integer> sources(String target) {
+        Map<String, Integer> map = new HashMap<>();
+        for (Edge e : edges) {
+            if (e.getTarget().equals(target))
+                map.put(e.getSource(), e.getWeight());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Integer> targets(String source) {
+        Map<String, Integer> map = new HashMap<>();
+        for (Edge e : edges) {
+            if (e.getSource().equals(source))
+                map.put(e.getTarget(), e.getWeight());
+        }
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return "ConcreteEdgesGraph vertices=" + vertices + " edges=" + edges;
+    }
 }
