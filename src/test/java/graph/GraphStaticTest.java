@@ -1,7 +1,6 @@
 package graph;
 
 import static org.junit.Assert.*;
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -12,13 +11,9 @@ import org.junit.Test;
  */
 public class GraphStaticTest {
 
-    // Testing strategy:
-    // empty() -> should return an empty graph with no vertices
-    // No inputs, only output observed via vertices()
-
     @Test(expected = AssertionError.class)
     public void testAssertionsEnabled() {
-        assert false; // make sure assertions are enabled with VM argument: -ea
+        assert false;
     }
 
     @Test
@@ -27,7 +22,6 @@ public class GraphStaticTest {
                 Collections.emptySet(), Graph.empty().vertices());
     }
 
-    // optional: additional test for new graph functionality
     @Test
     public void testEmptyGraphAddVertex() {
         Graph<String> g = Graph.empty();

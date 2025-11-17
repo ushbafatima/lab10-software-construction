@@ -9,39 +9,17 @@ import java.util.Set;
 import org.junit.Test;
 
 /**
- * Tests for instance methods of Graph<String>.
- *
- * Testing strategy:
- * - add(vertex)
- *   - add a new vertex to empty graph
- *   - add a duplicate vertex
- * - remove(vertex)
- *   - remove existing vertex
- *   - remove non-existing vertex
- * - set(source, target, weight)
- *   - add new edge between existing vertices
- *   - add edge where vertices don't exist yet (vertices added automatically)
- *   - update weight of existing edge
- *   - remove edge (weight 0)
- * - vertices()
- *   - check vertices after add/remove
- * - sources(target)
- *   - check correct sources map
- * - targets(source)
- *   - check correct targets map
+ * Abstract tests for instance methods of Graph<String>.
+ * Concrete subclasses provide the specific implementation to test.
  */
 public abstract class GraphInstanceTest {
 
-    /**
-     * Overridden by implementation-specific test classes.
-     *
-     * @return a new empty graph of the particular implementation being tested
-     */
+    // Abstract method to provide fresh empty instance
     public abstract Graph<String> emptyInstance();
 
     @Test(expected = AssertionError.class)
     public void testAssertionsEnabled() {
-        assert false; // make sure assertions are enabled with VM argument: -ea
+        assert false; // make sure assertions are enabled with -ea
     }
 
     @Test
@@ -74,12 +52,11 @@ public abstract class GraphInstanceTest {
         g.add("A");
         g.add("B");
 
-        // add new edge
         assertEquals(0, g.set("A", "B", 5));
         assertEquals(Map.of("B", 5), g.targets("A"));
         assertEquals(Map.of("A", 5), g.sources("B"));
 
-        // update edge weight
+        // update edge
         assertEquals(5, g.set("A", "B", 7));
         assertEquals(Map.of("B", 7), g.targets("A"));
 
@@ -92,8 +69,6 @@ public abstract class GraphInstanceTest {
     @Test
     public void testSetEdgeWithNewVertices() {
         Graph<String> g = emptyInstance();
-
-        // vertices "X" and "Y" don't exist yet
         assertEquals(0, g.set("X", "Y", 10));
         assertEquals(Set.of("X", "Y"), g.vertices());
         assertEquals(Map.of("Y", 10), g.targets("X"));
@@ -107,10 +82,7 @@ public abstract class GraphInstanceTest {
         g.set("C", "B", 4);
         g.set("B", "D", 5);
 
-        Map<String, Integer> sourcesB = g.sources("B");
-        assertEquals(Map.of("A", 3, "C", 4), sourcesB);
-
-        Map<String, Integer> targetsB = g.targets("B");
-        assertEquals(Map.of("D", 5), targetsB);
+        assertEquals(Map.of("A", 3, "C", 4), g.sources("B"));
+        assertEquals(Map.of("D", 5), g.targets("B"));
     }
 }
